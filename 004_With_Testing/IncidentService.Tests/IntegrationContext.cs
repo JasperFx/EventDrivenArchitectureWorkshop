@@ -70,14 +70,18 @@ public abstract class IntegrationContext : IAsyncLifetime
 
     public IAlbaHost Host => _fixture.Host;
 
-    public IDocumentStore Store => _fixture.Host.Services.GetRequiredService<IDocumentStore>();
+    public IDocumentStore theStore => _fixture.Host.Services.GetRequiredService<IDocumentStore>();
 
     async Task IAsyncLifetime.InitializeAsync()
     {
         // Using Marten, wipe out all data and reset the state
         // back to exactly what we described in InitialAccountData
-        await Store.Advanced.ResetAllData();
+        await theStore.Advanced.ResetAllData();
+
+        await theContextIs();
     }
+
+    protected virtual Task theContextIs() => Task.CompletedTask;
 
     // This is required because of the IAsyncLifetime 
     // interface. Note that I do *not* tear down database
