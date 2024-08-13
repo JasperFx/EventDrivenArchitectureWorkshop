@@ -1,0 +1,19 @@
+version: '3'
+services:
+  postgresql:
+    image: ${POSTGRES_IMAGE:-ionx/postgres-plv8:12.8}
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: marten_testing
+      NAMEDATALEN: 100
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: critterstack@devup.com
+      PGADMIN_DEFAULT_PASSWORD: postgres
+    ports:
+      - "5050:80"
