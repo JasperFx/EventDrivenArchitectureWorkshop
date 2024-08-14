@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using Alba;
+using JasperFx.Core.Reflection;
+using Marten.Events;
 using Shouldly;
 
 namespace IncidentService.Tests;
@@ -17,10 +19,11 @@ public class LogIncidentTests : IntegrationContext
             x.WithClaim(new Claim("user-id", Guid.NewGuid().ToString()));
     
             // This customer does not exist, so this should 400
-            x.Post.Json(new LogIncident(Guid.NewGuid(), contact, "Oven won't light"));
+            x.Post.Json(new LogIncident(Guid.NewGuid(), contact, "Oven won't light"))
+                .ToUrl("/api/incidents");
 
             x.StatusCodeShouldBe(400);
-            x.ContentTypeShouldBe("problem details");
+            x.ContentTypeShouldBe("application/problem+json; charset=utf-8");
         });
     }
 
@@ -48,8 +51,11 @@ public class when_logging_a_new_incident_happy_path : IntegrationContext
             // Alba can help you stub claims during the request
             x.WithClaim(new Claim("user-id", theUserId.ToString()));
     
-            x.Post.Json(new LogIncident(BaselineData.Customer1Id, theContact, "Oven won't light"));
-            x.StatusCodeShouldBeOk();
+            x.Post.Json(new LogIncident(BaselineData.Customer1Id, theContact, "Oven won't light"))
+                .ToUrl("/api/incidents");
+            
+            // This endpoint returns 201, empty body
+            x.StatusCodeShouldBe(201);
         });
     
         theNewIncidentId = result.ReadAsJson<Guid>();
@@ -61,14 +67,14 @@ public class when_logging_a_new_incident_happy_path : IntegrationContext
         await using var session = theStore.LightweightSession();
     
         var stream = await session.Events.FetchStreamAsync(theNewIncidentId);
-        var logged = stream.Single().ShouldBeOfType<IncidentLogged>();
+        var logged = stream.Single().As<IEvent<IncidentLogged>>();
             
         // Remember that .NET records build in their own equality
         // We *could* do a ShouldBe(new IncidentLogged()) here, but I think the code
         // is ugly doing that
-        logged.CustomerId.ShouldBe(BaselineData.Customer1Id);
-        logged.Contact.ShouldBe(theContact);
-        logged.LoggedBy.ShouldBe(theUserId);
+        logged.Data.CustomerId.ShouldBe(BaselineData.Customer1Id);
+        logged.Data.Contact.ShouldBe(theContact);
+        logged.Data.LoggedBy.ShouldBe(theUserId);
     }
     
     

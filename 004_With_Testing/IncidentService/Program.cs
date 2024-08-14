@@ -5,6 +5,9 @@ using Marten.Events.Projections;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAuthentication("Test");
+builder.Services.AddAuthorization();
+
 builder.Services.AddMarten(opts =>
     {
         // You always have to tell Marten what the connection string to the underlying
@@ -39,6 +42,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Do this to make Alba tests work Jeremy!
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

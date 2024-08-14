@@ -1,8 +1,10 @@
 using Alba;
 using Alba.Security;
+using JasperFx.Core;
 using Marten;
 using Marten.Schema;
 using Microsoft.Extensions.DependencyInjection;
+using Oakton;
 
 public class AppFixture : IAsyncLifetime
 {
@@ -10,6 +12,9 @@ public class AppFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
+        // THIS IS CRUCIAL, COMPLAIN TO THE ASPNETCORE TEAM
+        OaktonEnvironment.AutoStartHost = true;
+        
         // This is bootstrapping the actual application using
         // its implied Program.Main() set up
         // This is using a library named "Alba". See https://jasperfx.github.io/alba for more information

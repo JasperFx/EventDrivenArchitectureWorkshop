@@ -11,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Adds in some command line diagnostics
 builder.Host.ApplyOaktonExtensions();
 
+builder.Services.AddAuthentication("Test");
+builder.Services.AddAuthorization();
+
 builder.Services.AddMarten(opts =>
     {
         // You always have to tell Marten what the connection string to the underlying

@@ -1,5 +1,6 @@
 using Marten;
 using Marten.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 public record LogIncident(
@@ -20,6 +21,7 @@ public class IncidentController : ControllerBase
     [HttpPost("/api/incidents")]
     [ProducesResponseType<Guid>(200)]
     [ProducesResponseType<ProblemDetails>(400)]
+    [Authorize]
     public async Task<IActionResult> Log(
         [FromBody] LogIncident command
         )
@@ -28,7 +30,7 @@ public class IncidentController : ControllerBase
 
         var customer = await _session.LoadAsync<Customer>(command.CustomerId);
         
-        if (customer == null) return Problem("Invalid customer");
+        if (customer == null) return Problem("Invalid customer", statusCode:400);
         
         var logged = new IncidentLogged(command.CustomerId, command.Contact, command.Description, userId);
 
