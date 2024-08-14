@@ -13,7 +13,7 @@ await using var store = DocumentStore.For(opts =>
     
     // Telling Marten about the projection logic for the IncidentDetails
     // view of the events
-    opts.Projections.Add<IncidentDetailsProjection>(ProjectionLifecycle.Live);
+    opts.Projections.Add<IncidentProjection>(ProjectionLifecycle.Live);
 });
 
 await using var session = store.LightweightSession();
@@ -67,13 +67,3 @@ var incident = await session.Events.AggregateStreamAsync<Incident>(incidentId);
 
 Console.WriteLine(JsonConvert.SerializeObject(incident, settings));
 
-
-static async Task PrintIncident(IDocumentStore store, Guid incidentId)
-{
-    await using var session = store.LightweightSession();
-    
-    // Tell Marten to load all events -- in order -- for the designated
-    // incident event stream, then project that data into an IncidentDetails
-    // view
-    var incident = await session.Events.AggregateStreamAsync<IncidentDetails>(incidentId);
-}
