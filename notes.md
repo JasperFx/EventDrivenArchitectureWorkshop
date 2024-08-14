@@ -15,3 +15,7 @@
 * 010, add multi-tenancy through separate databases. New Oakton command to spin up 
 * Add Rabbit MQ admin to docker
 * Get pgadmin4 to work
+
+
+* Fold IncidentDetails into Incident
+* Use Customer document for the intro to Marten as document db
