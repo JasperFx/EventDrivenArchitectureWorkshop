@@ -35,7 +35,7 @@ public static class TryAssignPriorityHandler
     // Wolverine will call this method before the "real" Handler method,
     // and it can "magically" connect that the Customer object should be delivered
     // to the Handle() method at runtime
-    public static Task<Customer?> LoadAsync(IncidentDetails details, IDocumentSession session)
+    public static Task<Customer?> LoadAsync(Incident details, IDocumentSession session)
     {
         return session.LoadAsync<Customer>(details.CustomerId);
     }
@@ -45,7 +45,7 @@ public static class TryAssignPriorityHandler
     [AggregateHandler]
     public static (Events, OutgoingMessages) Handle(
         TryAssignPriority command, 
-        IncidentDetails details,
+        Incident details,
         Customer customer)
     {
         var events = new Events();

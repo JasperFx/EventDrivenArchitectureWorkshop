@@ -77,7 +77,7 @@ public class when_logging_a_new_incident_happy_path : IntegrationContext
     {
         await using var session = theStore.LightweightSession();
             
-        var incident = await session.LoadAsync<IncidentDetails>(theNewIncidentId);
+        var incident = await session.LoadAsync<Incident>(theNewIncidentId);
         incident.Status.ShouldBe(IncidentStatus.Pending);
         incident.CustomerId.ShouldBe(BaselineData.Customer1Id);
             

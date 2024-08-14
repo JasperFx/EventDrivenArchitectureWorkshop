@@ -34,16 +34,16 @@ public class IncidentController : ControllerBase
     }
 
     [HttpGet("/api/incidents/{incidentId}")]
-    public Task<IncidentDetails> Get(Guid incidentId)
+    public Task<Incident> Get(Guid incidentId)
     {
-        return _session.LoadAsync<IncidentDetails>(incidentId);
+        return _session.LoadAsync<Incident>(incidentId);
     }
 
     [HttpGet("/api/incidents/pending")]
-    public Task<IReadOnlyList<IncidentDetails>> GetOpenIncidents()
+    public Task<IReadOnlyList<Incident>> GetOpenIncidents()
     {
         return _session
-            .Query<IncidentDetails>()
+            .Query<Incident>()
             .Where(x => x.Status == IncidentStatus.Pending)
             .ToListAsync();
     }

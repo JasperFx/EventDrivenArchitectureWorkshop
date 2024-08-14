@@ -48,7 +48,7 @@ public class CategoriseIncidentController : ControllerBase
         var userId = currentUserId();
 
         // This will give us access to the existing Incident state for the event stream
-        var stream = await session.Events.FetchForWriting<IncidentDetails>(command.Id, command.Version, HttpContext.RequestAborted);
+        var stream = await session.Events.FetchForWriting<Incident>(command.Id, command.Version, HttpContext.RequestAborted);
         if (stream.Aggregate == null) return NotFound();
         
         if (stream.Aggregate.Category != command.Category)

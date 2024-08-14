@@ -45,7 +45,7 @@ public static class CategoriseIncidentHandler
     // by Wolverine as appending one or zero events
     public static async Task<object?> Handle(
         CategoriseIncident command, 
-        IncidentDetails existing,
+        Incident existing,
         IMessageBus bus)
     {
         if (existing.Category != command.Category)

@@ -16,7 +16,7 @@ builder.Services.AddMarten(opts =>
         // We have to tell Marten about the projection we built in the previous post
         // so that Marten will "know" how to project events to the IncidentDetails
         // projected view
-        opts.Projections.Add<IncidentDetailsProjection>(ProjectionLifecycle.Inline);
+        opts.Projections.Add<IncidentProjection>(ProjectionLifecycle.Inline);
     })
     // This is a mild optimization
     .UseLightweightSessions();
