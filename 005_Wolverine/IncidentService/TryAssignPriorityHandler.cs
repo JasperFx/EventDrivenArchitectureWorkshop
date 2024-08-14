@@ -30,8 +30,15 @@ public class TryAssignPriorityController : ControllerBase
     }
 }
 
+
 public static class TryAssignPriorityHandler
 {
+    // Just cascading the TryAssignPriority message
+    public static TryAssignPriority Handle(IEvent<IncidentCategorised> e)
+    {
+        return new TryAssignPriority { IncidentId = e.StreamId, UserId = e.Data.UserId };
+    }
+    
     // Wolverine will call this method before the "real" Handler method,
     // and it can "magically" connect that the Customer object should be delivered
     // to the Handle() method at runtime

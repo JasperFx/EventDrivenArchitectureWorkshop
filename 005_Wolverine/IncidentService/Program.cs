@@ -2,10 +2,14 @@ using FluentValidation;
 using IncidentService;
 using Marten;
 using Marten.Events.Projections;
+using Oakton;
 using Wolverine;
 using Wolverine.Marten;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Adds in some command line diagnostics
+builder.Host.ApplyOaktonExtensions();
 
 builder.Services.AddMarten(opts =>
     {
@@ -27,7 +31,14 @@ builder.Services.AddMarten(opts =>
     // transactional middleware support we'll introduce in a little bit...
     .IntegrateWithWolverine()
     
-    // Push any IncidentCategorised events to Wolverine command handling as TryAssignPriority
+    // Option #1: Publish the events to Wolverine in strict order
+    .PublishEventsToWolverine("PriorityAssignments", r =>
+    {
+        r.PublishEvent<IncidentCategorised>();
+    })
+    
+    // Option #2: Push any IncidentCategorised events to Wolverine command handling as TryAssignPriority
+    // immediately with no ordering guarantees
     .EventForwardingToWolverine(opts =>
     {
         // Setting up a little transformation of an event with event metadata to an internal command message
@@ -63,7 +74,9 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 
-app.Run();
+// Opt into Oakton command line usage for quite a few
+// diagnostics and utilities around Marten & Wolverine
+return await app.RunOaktonCommands(args);
 
 
 // This is necessary for the Alba specification we'll

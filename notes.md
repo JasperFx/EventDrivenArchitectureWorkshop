@@ -4,10 +4,11 @@
 * Add working Alba tests for LogIncident in 004
 * Copy 004 to 005, add Wolverine
 * Add TryPrioritiseHandler into 005
-* Integration tests on handlers into 005
+
 * Oakton integration into 005
 * Subscription to the IncidentCategorised event in 005
 * Copy 005 to 006, convert to Wolverine.HTTP
+* Integration tests on handlers into 006, test TryAssignPriority
 * 005 to 006, show usage of batch querying in a LoadAsync method
 * 007, add Rabbit MQ and a downstream service for notifications
 * 008, add a web service call to a theoretical payment system. Use this for error handling discussions
